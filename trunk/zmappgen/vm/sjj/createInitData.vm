@@ -1,0 +1,15 @@
+#foreach( $record in $data.valueTable )
+INSERT INTO $data.tableName (
+#foreach( $fieldName in $data.fieldNameList )
+#if(!${foreach.first})
+, #end $fieldName #end
+) values (
+#foreach( $cellValue in $record )
+#if(!${foreach.first})
+, #end #if($cellValue) $cellValue #else null #end
+ #end
+)
+;
+#end
+
+

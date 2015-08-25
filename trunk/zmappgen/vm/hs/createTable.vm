@@ -1,0 +1,16 @@
+
+CREATE TABLE $table.tableName
+(
+#foreach( $column in $table.columns )
+#if(!${foreach.first})
+ ,
+#end
+  $column.columnName $column.columnType $column.nullStr#end
+#if($table.primaryKeyString != "")
+ ,
+  PRIMARY KEY($table.primaryKeyString)#end
+#foreach( $fk in $table.foreignKeys )
+ ,
+  FOREIGN KEY(${fk.columnName}) REFERENCES ${fk.foreignKeyTable}(${fk.foreignKeyColumn})#end
+
+)

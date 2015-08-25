@@ -1,0 +1,22 @@
+
+package $daoPackage;
+
+public class $table.modelName extends BaseObject {
+    private static final long serialVersionUID = 1L;
+
+#foreach( $column in $table.columns )
+    private $column.attributeType $column.attributeName;
+#end
+
+#foreach( $column in $table.columns )
+
+    public $column.attributeType get${stringUtil.capitalize($column.attributeName)}() {
+        return $column.attributeName;
+    }
+
+    public void set${stringUtil.capitalize($column.attributeName)}($column.attributeType $column.attributeName) {
+        this.$column.attributeName=$column.attributeName;
+    }
+#end
+
+}

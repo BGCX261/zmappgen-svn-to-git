@@ -1,0 +1,12 @@
+
+CREATE TABLE $table.tableName
+(
+#foreach( $metaData in $table.metaDatas )
+#if(!${foreach.first})
+ ,
+#end
+  $metaData.fieldName $metaData.fieldType #if($metaData.allowNull=="Y")NULL #else NOT NULL #end#end
+ ,
+  PRIMARY KEY(ID)
+
+)

@@ -1,0 +1,88 @@
+#set( $resultMap = ${table.poName} + "Result" )
+#set( $poClass = ${package}+ "." +${table.poName} )
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="$table.poName" >
+  <resultMap id="$resultMap" class="$poClass" >
+#foreach( $column in $table.columns )
+    <result column="$column.columnName" property="$column.attributeName" jdbcType="$column.jdbcType" javaType="$column.attributeType" />
+#end
+  </resultMap>
+
+<!--    -->
+  <select id="selectByPrimaryKey" resultMap="$resultMap" parameterClass="$poClass" >
+    select $table.ColumnNameString
+    from $table.tableName
+    where
+#foreach( $pk in $table.primaryKeys )
+  #if(!${foreach.first})
+      and
+  #end
+      $pk.columnName = #${pk.attributeName}:${pk.jdbcType}#
+#end
+  </select>
+<!--    -->
+  <select id="selectAll" resultMap="$resultMap" >
+    select $table.ColumnNameString
+    from $table.tableName
+  </select>
+<!--    -->
+  <delete id="deleteByPrimaryKey" parameterClass="$poClass" >
+    delete from $table.tableName
+	where
+#foreach( $pk in $table.primaryKeys )
+  #if(!${foreach.first})
+      and
+  #end
+      $pk.columnName = #${pk.attributeName}:${pk.jdbcType}#
+#end
+  </delete>
+<!--    -->
+  <insert id="insert" parameterClass="$poClass" >
+    insert into $table.tableName ($table.ColumnNameString)
+    values (
+#foreach( $col in $table.columns )
+  #if(!${foreach.first})
+      ,
+  #end
+      #${col.attributeName}:${col.jdbcType}#
+#end
+	)
+  </insert>
+<!--    -->
+  <update id="updateByPrimaryKey" parameterClass="$poClass" >
+    update $table.tableName
+    set
+#foreach( $unpk in $table.unPrimaryKeys )
+  #if(!${foreach.first})
+      ,
+  #end
+      $unpk.columnName = #${unpk.attributeName}:${unpk.jdbcType}#
+#end
+     where
+#foreach( $pk in $table.primaryKeys )
+  #if(!${foreach.first})
+      and
+  #end
+      $pk.columnName = #${pk.attributeName}:${pk.jdbcType}#
+#end
+  </update>
+<!--    -->
+  <update id="updateByPrimaryKeySelective" parameterClass="$poClass" >
+    update $table.tableName
+    <dynamic prepend="set" >
+#foreach( $unpk in $table.unPrimaryKeys )
+      <isNotNull prepend="," property="${unpk.attributeName}" >
+        $unpk.columnName = #${unpk.attributeName}:${unpk.jdbcType}#
+      </isNotNull>
+#end
+    </dynamic>
+    where
+#foreach( $pk in $table.primaryKeys )
+  #if(!${foreach.first})
+      and
+  #end
+      $pk.columnName = #${pk.attributeName}:${pk.jdbcType}#
+#end
+  </update>
+</sqlMap>

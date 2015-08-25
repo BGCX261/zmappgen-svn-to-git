@@ -1,0 +1,62 @@
+
+package ${daoPackage};
+
+import ${poPackage}.${table.modelName};
+import java.util.List;
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+
+public class ${table.modelName}DaoiBatis extends SqlMapClientDaoSupport implements ${table.modelName}Dao{
+
+    public ${table.modelName}Dao() {
+        super();
+    }
+
+    /**
+     *
+     */
+  	public void insert(${table.modelName} record) {
+        getSqlMapClientTemplate().insert("${table.modelName}.insert", record);
+    }
+
+    /**
+     *
+     */
+    public int updateByPrimaryKeySelective(${table.modelName} record) {
+        int rows = getSqlMapClientTemplate().update("${table.modelName}.updateByPrimaryKeySelective", record);
+        return rows;
+    }
+
+    /**
+     *
+     */
+    @SuppressWarnings("unchecked")
+    public List<${table.modelName}> selectAll() {
+        List<${table.modelName}> list = (List<${table.modelName}>) getSqlMapClientTemplate().queryForList("${table.modelName}.selectAll");
+        return list;
+	}
+
+    /**
+     *
+     */
+    public ${table.modelName} selectByPrimaryKey(#foreach( $pk in $table.primaryKeys )#if(!${foreach.first}),#end ${pk.attributeType} ${pk.attributeName}#end ){
+        ${table.modelName} key = new ${table.modelName}();
+#foreach( $pk in $table.primaryKeys )
+        key.set${stringUtil.capitalize($pk.attributeName)}(${pk.attributeName});
+#end
+        ${table.modelName} record = (${table.modelName}) getSqlMapClientTemplate().queryForObject("${table.modelName}.selectByPrimaryKey", key);
+        return record;
+    }
+
+    /**
+     *
+     */
+    public int deleteByPrimaryKey(#foreach( $pk in $table.primaryKeys )#if(!${foreach.first}),#end ${pk.attributeType} ${pk.attributeName}#end ){
+        ${table.modelName} key = new ${table.modelName}();
+#foreach( $pk in $table.primaryKeys )
+        key.set${stringUtil.capitalize($pk.attributeName)}(${pk.attributeName});
+#end
+        int rows = getSqlMapClientTemplate().delete("${table.modelName}.deleteByPrimaryKey", key);
+        return rows;
+    }
+
+}
